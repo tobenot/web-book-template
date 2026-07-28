@@ -20,7 +20,7 @@
   --sl-font-mono: "Maple Mono", "JetBrains Mono", "Cascadia Code", "Fira Code", Consolas, monospace;
   --sl-content-width: 52rem;
 
-  /* Accent (GitHub blue) */
+  /* Accent (默认 GitHub 蓝) —— 这里改你自己的强调色 */
   --book-accent: #2f81f7;
   --book-accent-dim: #1f6feb;
 
@@ -50,6 +50,7 @@
 :root[data-theme="light"] {
   color-scheme: light;
 
+  /* 这里改你自己的强调色（亮色主题） */
   --book-accent: #0969da;
   --book-accent-dim: #0550ae;
 
