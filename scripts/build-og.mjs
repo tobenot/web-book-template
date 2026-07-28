@@ -126,12 +126,12 @@ function deriveMeta(rel, data) {
 // ============================== Satori 模板 ==============================
 
 const COLORS = {
-  fg: '#e6f4f1',
-  muted: '#9bb6b1',
-  accent: '#1fd2c4',
-  bgFrom: '#0a1f1c',
-  bgTo: '#052828',
-  divider: 'rgba(31, 210, 196, 0.25)',
+  fg: '#e6edf3',
+  muted: '#8b949e',
+  accent: '#2f81f7',
+  bgFrom: '#0d1117',
+  bgTo: '#161b22',
+  divider: 'rgba(47, 129, 247, 0.25)',
 };
 
 // 换成你的书名 / 作者与站点信息，用于生成 OG 分享卡

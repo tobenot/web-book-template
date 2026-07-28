@@ -127,7 +127,7 @@ const editFullUrl = editPath ? `${repoBase}/edit/main/${editPath}` : repoBase;
     margin-block: 1.6rem;
     padding: 1rem;
     border: 1px solid var(--book-border);
-    border-radius: 12px;
+    border-radius: 6px;
     background: var(--book-surface-1);
     overflow-x: auto;
     text-align: center;
@@ -158,15 +158,12 @@ const editFullUrl = editPath ? `${repoBase}/edit/main/${editPath}` : repoBase;
   }
   .book-meta__chip--time {
     border-color: var(--book-border-strong);
-    /* 用 --sl-color-accent 而不是 --book-cyan：
-       前者随主题切换（dark = 霓虹青 #1fd2c4，light = 深墨绿 #0a8f83），
-       后者在两种主题下都是 #1fd2c4，亮色主题白底上会过于扎眼。 */
     color: var(--sl-color-accent);
   }
   .book-meta__chip--diff-新手 {
-    background: rgba(31, 210, 196, 0.08);
-    color: var(--book-cyan);
-    border-color: rgba(31, 210, 196, 0.3);
+    background: var(--sl-color-accent-low);
+    color: var(--book-accent);
+    border-color: var(--book-border-strong);
   }
   .book-meta__chip--diff-进阶 {
     background: rgba(255, 170, 60, 0.08);
@@ -193,7 +190,7 @@ const editFullUrl = editPath ? `${repoBase}/edit/main/${editPath}` : repoBase;
     margin-top: 1.5rem;
     padding: 0.85rem 1.1rem;
     border: 1px dashed var(--book-border-strong);
-    border-radius: 12px;
+    border-radius: 6px;
     background: var(--book-surface-1);
     color: var(--sl-color-gray-2);
     font-size: 0.92rem;
@@ -206,20 +203,19 @@ const editFullUrl = editPath ? `${repoBase}/edit/main/${editPath}` : repoBase;
     display: inline-flex;
     align-items: center;
     padding: 0.35rem 0.85rem;
-    border-radius: 8px;
+    border-radius: 6px;
     background: var(--book-surface-2);
     border: 1px solid var(--book-border-strong);
     color: var(--sl-color-gray-1);
     font-weight: 600;
     font-size: 0.88rem;
     text-decoration: none !important;
-    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   }
   .book-feedback__btn:hover {
     background: var(--book-surface-3);
-    border-color: var(--book-cyan-dim);
-    color: var(--book-cyan-dim);
-    transform: translateY(-1px);
+    border-color: var(--book-accent);
+    color: var(--book-accent);
   }
   .book-feedback__sep {
     color: var(--sl-color-gray-4);

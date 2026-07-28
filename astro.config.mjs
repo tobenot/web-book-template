@@ -43,7 +43,7 @@ export default defineConfig({
       customCss: ['./src/styles/custom.css'],
       head: [
         // 主题色（移动端浏览器顶栏）
-        { tag: 'meta', attrs: { name: 'theme-color', content: '#1fd2c4' } },
+        { tag: 'meta', attrs: { name: 'theme-color', content: '#0d1117' } },
 
         // —— Open Graph（社交分享卡）——
         // og:title / og:description / og:url 由 Starlight 基于 frontmatter 自动注入；

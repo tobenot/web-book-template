@@ -97,35 +97,35 @@ const showPart = !isSplash && !!partLabel;
     transition: color 0.2s ease;
   }
 
-  /* 分隔符：低对比度青绿系，不抢戏，不会被压缩 */
+  /* 分隔符：低对比度蓝，不抢戏，不会被压缩 */
   .site-title__sep {
-    color: var(--book-cyan);
+    color: var(--book-accent);
     opacity: 0.45;
     font-weight: 500;
     user-select: none;
     flex-shrink: 0;
   }
   :root[data-theme="light"] .site-title__sep {
-    color: #0a8f83;
+    color: var(--book-accent);
     opacity: 0.45;
   }
 
-  /* 「第X部 / 附录」：作为面包屑中段，用统一青绿色背景描边的小 chip */
+  /* 「第X部 / 附录」：作为面包屑中段，用统一蓝色背景描边的小 chip */
   .site-title__part {
     flex-shrink: 0;
     font-size: 0.78rem;
     font-weight: 600;
     line-height: 1;
     padding: 0.22em 0.55em;
-    border: 1px solid rgba(31, 210, 196, 0.25);
+    border: 1px solid var(--book-border-strong);
     border-radius: 999px;
-    color: var(--book-cyan);
-    background: rgba(31, 210, 196, 0.06);
+    color: var(--book-accent);
+    background: var(--sl-color-accent-low);
   }
   :root[data-theme="light"] .site-title__part {
-    border-color: rgba(10, 143, 131, 0.25);
-    color: #0a8f83;
-    background: rgba(10, 143, 131, 0.06);
+    border-color: var(--book-border-strong);
+    color: var(--book-accent);
+    background: var(--sl-color-accent-low);
   }
 
   /* 章节标题：高亮、加粗 */
@@ -136,12 +136,12 @@ const showPart = !isSplash && !!partLabel;
     line-height: inherit;
   }
 
-  /* 整体 hover 时章节和 chip 进行优雅的亮色提升 */
+  /* 整体 hover 时章节和 chip 进行颜色提升 */
   .site-title:hover .site-title__chapter {
-    color: var(--book-cyan);
+    color: var(--book-accent);
   }
   :root[data-theme="light"] .site-title:hover .site-title__chapter {
-    color: #0a8f83;
+    color: var(--book-accent);
   }
 
   /* —— 断点策略 —— */

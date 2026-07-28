@@ -60,22 +60,24 @@ import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
     display: inline-flex;
     align-items: center;
     padding: 0.55rem 1.2rem;
-    border-radius: 10px;
-    border: 1px solid var(--book-border-strong, rgba(31, 210, 196, 0.4));
+    border-radius: 6px;
+    border: 1px solid var(--book-border-strong, #6e7681);
     background: transparent;
-    color: var(--book-cyan, #1fd2c4);
+    color: var(--book-accent, #2f81f7);
     font-weight: 600;
     text-decoration: none;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
   }
   .not-found__btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(31, 210, 196, 0.18);
+    background: var(--book-surface-1, #161b22);
   }
   .not-found__btn--primary {
-    background: linear-gradient(135deg, var(--book-cyan, #1fd2c4), var(--book-cyan-dim, #18a89c));
-    color: #050d0c;
-    border-color: transparent;
+    background: var(--book-accent-dim, #1f6feb);
+    color: #ffffff;
+    border-color: var(--book-accent-dim, #1f6feb);
+  }
+  .not-found__btn--primary:hover {
+    background: var(--book-accent, #2f81f7);
   }
   kbd {
     display: inline-block;
