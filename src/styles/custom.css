@@ -103,6 +103,26 @@ header.header {
   background: var(--book-bg) !important;
 }
 
+/* 阅读进度条：贴在视口顶部，宽度用 transform 更新，避免逐帧触发布局重排 */
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--book-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  z-index: 100;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reading-progress {
+    transition: transform 0.1s linear;
+  }
+}
+
 nav.sidebar-pane,
 .right-sidebar {
   border-color: var(--book-border) !important;

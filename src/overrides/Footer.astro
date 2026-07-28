@@ -36,6 +36,9 @@ const editFullUrl = editPath ? `${repoBase}/edit/main/${editPath}` : repoBase;
 
 <Default {...Astro.props}><slot /></Default>
 
+{/* —— 阅读进度条（splash / 部入口 / 减法页面跳过，和反馈条同一个判断） —— */}
+{!isQuietPage && <div id="reading-progress" class="reading-progress" aria-hidden="true"></div>}
+
 {/* —— 反馈条（splash / 部入口 / 减法页面跳过） —— */}
 {!isQuietPage && (
   <div class="book-feedback not-content">
@@ -87,6 +90,25 @@ const editFullUrl = editPath ? `${repoBase}/edit/main/${editPath}` : repoBase;
       const link = document.querySelector(`a[rel="${rel}"]`);
       if (link) location.href = link.href;
     });
+  })();
+</script>
+
+{/* —— 阅读进度条：按整页滚动比例算，用 transform 而不是 width 避免触发布局重排 —— */}
+<script is:inline>
+  (() => {
+    const bar = document.getElementById('reading-progress');
+    if (!bar) return;
+
+    const update = () => {
+      const doc = document.documentElement;
+      const scrollable = doc.scrollHeight - doc.clientHeight;
+      const progress = scrollable > 0 ? Math.min(1, Math.max(0, doc.scrollTop / scrollable)) : 0;
+      bar.style.transform = `scaleX(${progress})`;
+    };
+
+    update();
+    document.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
   })();
 </script>
 
