@@ -1,0 +1,119 @@
+---
+title: 组件活样例
+description: 内部演示页，给写作者对照渲染效果，不是正文。
+draft: true
+sidebar:
+  hidden: true
+---
+
+import { Steps, FileTree, Tabs, TabItem, CardGrid, Card, LinkCard, Badge } from '@astrojs/starlight/components';
+import Solution from '../../../components/Solution.astro';
+
+只在 `astro dev` 下可见（`draft: true`），production build 会跳过。参见仓库根目录的 `STARLIGHT-FEATURES.md`。
+
+## Steps
+
+<Steps>
+1. 第一步描述
+2. 第二步描述
+3. 第三步描述
+</Steps>
+
+## FileTree
+
+<FileTree>
+- src/
+  - content/
+    - docs/
+      - **index.mdx** ← 首页
+  - components/
+</FileTree>
+
+## Tabs：平台 / 方案
+
+<Tabs>
+  <TabItem label="Windows">Windows 下的步骤。</TabItem>
+  <TabItem label="macOS">macOS 下的步骤。</TabItem>
+</Tabs>
+
+## Tabs：包管理器（命令行教程常用）
+
+<Tabs syncKey="pkg">
+  <TabItem label="npm">
+    ```sh
+    npm install
+    npm run dev
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```sh
+    pnpm install
+    pnpm dev
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```sh
+    yarn install
+    yarn dev
+    ```
+  </TabItem>
+</Tabs>
+
+## CardGrid / LinkCard
+
+<CardGrid>
+  <Card title="标题" icon="rocket">描述。</Card>
+  <LinkCard title="去某章" href="/preface/" description="一句话提要。" />
+</CardGrid>
+
+<Badge text="新" variant="tip" />
+
+## Asides
+
+:::note[扩展阅读]
+中性的补充。
+:::
+
+:::tip[为什么是这样？]
+讲设计原理、对比"如果不这样会怎样"。
+:::
+
+:::caution[踩坑预警]
+具体到哪个按钮、哪个字段。
+:::
+
+:::danger[千万别]
+真的会让数据丢失或上传失败的硬错误。
+:::
+
+## Expressive Code：文件名 + 高亮 + diff
+
+```ts title="src/config.ts" {2} ins={3} del={4} showLineNumbers
+export const config = {
+  name: '不变的行',
+  added: '新增的行',
+  removed: '要删掉的行',
+};
+```
+
+## Mermaid
+
+<div class="mermaid">
+flowchart LR
+  A[开始] --> B[中间步骤]
+  B --> C[结果]
+</div>
+
+## 练习 / 答案（Solution 组件）
+
+### 练习：写一个从 1 加到 100 的函数
+
+练习本身就是普通 Markdown，不需要额外组件；只把答案折进 `<Solution>`。
+
+<Solution>
+```ts
+function sum1to100() {
+  return Array.from({ length: 100 }, (_, i) => i + 1).reduce((a, b) => a + b, 0);
+}
+```
+</Solution>
