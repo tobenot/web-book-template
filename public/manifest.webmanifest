@@ -1,0 +1,12 @@
+{
+  "name": "你的书名",
+  "short_name": "你的书名",
+  "description": "这本书讲什么、写给谁——和 astro.config.mjs 里的 bookDescription 保持一致。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
