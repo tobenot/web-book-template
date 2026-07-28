@@ -3,6 +3,7 @@ import starlight from '@astrojs/starlight';
 import sitemap from '@astrojs/sitemap';
 import starlightImageZoom from 'starlight-image-zoom';
 import starlightLinksValidator from 'starlight-links-validator';
+import starlightLlmsTxt from 'starlight-llms-txt';
 
 const bookTitle = '你的书名';
 const bookDescription = '这本书讲什么、写给谁——一两句话说清楚。';
@@ -111,6 +112,12 @@ export default defineConfig({
       ],
       plugins: [
         starlightImageZoom(),
+        // 生成 /llms.txt 和 /llms-full.txt：给读者"把整本书喂给 AI 问问题"用，
+        // 也顺带是"要单文件读全书"的人的落地点（模板不做 PDF 导出，这个替代）。
+        starlightLlmsTxt({
+          projectName: bookTitle,
+          description: bookDescription,
+        }),
         ...(enableLinksValidator
           ? [
               starlightLinksValidator({

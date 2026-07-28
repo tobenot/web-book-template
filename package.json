@@ -27,7 +27,8 @@
     "mermaid": "^11.15.0",
     "sharp": "0.34.5",
     "starlight-image-zoom": "^0.13.2",
-    "starlight-links-validator": "^0.19.0"
+    "starlight-links-validator": "^0.19.0",
+    "starlight-llms-txt": "^0.7.0"
   },
   "devDependencies": {
     "@resvg/resvg-js": "^2.6.2",
