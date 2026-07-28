@@ -5,14 +5,23 @@
 ## 快速开始
 
 1. 复制这个项目目录到新位置，作为新书的仓库。
-2. 改这几处占位信息：
-   - `astro.config.mjs`：`bookTitle` / `bookDescription` / `siteUrl`、`editLink.baseUrl`
-   - `package.json`：`name`
-   - `src/overrides/Head.astro`：`bookTitle` / `author`
-   - `src/overrides/Footer.astro`：`repoBase`
-   - `scripts/build-og.mjs`：`SITE_FOOTER` / `BOOK_NAME` / `HOME_TITLE_LINES` / `HOME_BADGES`
-   - `src/pages/rss.xml.js`：`title` / `description`
-   - `src/content/docs/index.mdx` / `preface.mdx` / `about.mdx`：正文占位处
+2. 按下表改占位信息（这份清单也是给 AI 用的：把整个项目丢给 AI，让它照着这张表逐项改掉就行）：
+
+   | 文件 | 字段 | 必改 | 说明 |
+   |---|---|---|---|
+   | `astro.config.mjs` | `bookTitle` | 必改 | 书名，显示在侧栏/标题/OG |
+   | `astro.config.mjs` | `bookDescription` | 必改 | 一两句话简介，写进 meta description |
+   | `astro.config.mjs` | `siteUrl` | 必改 | 部署后的域名，sitemap/canonical 用 |
+   | `astro.config.mjs` | `editLink.baseUrl` | 必改 | 你的 GitHub 仓库地址 + `/edit/main/`，"改文档"按钮用 |
+   | `src/overrides/Head.astro` | `bookTitle` / `author` | 必改 | `bookTitle` 和上面保持一致；`author` 填名字/链接 |
+   | `src/overrides/Footer.astro` | `repoBase` | 必改 | 你的 GitHub 仓库地址（不带 `/edit/main/`），"提 Issue"按钮用 |
+   | `scripts/build-og.mjs` | `SITE_FOOTER` / `BOOK_NAME` / `HOME_TITLE_LINES` / `HOME_BADGES` | 必改 | 分享卡上出现的文字 |
+   | `src/pages/rss.xml.js` | `title` / `description` | 必改 | RSS 订阅源标题/简介 |
+   | `src/content/docs/index.mdx` / `preface.mdx` / `about.mdx` | 正文 | 必改 | 首页/前言/关于页的占位正文 |
+   | `package.json` | `name` | 可选 | 包名，不影响运行 |
+
+   注意 `editLink.baseUrl` 和 `repoBase` 是同一个仓库地址，出现两处；部署按钮（见「部署」一节）用的也是这个地址。
+
 3. 安装依赖并本地预览：
 
 ```bash
@@ -69,7 +78,12 @@ design/rules/           写作规划、方法论参考等私人工作文档（�
 
 ## 部署
 
-Astro + Starlight 的标准静态站，可以部署到任何支持静态站点的平台。以 Cloudflare Pages 为例：
+Astro + Starlight 的标准静态站，可以部署到任何支持静态站点的平台。仓库推到 GitHub 后（用上面填的那个仓库地址），点按钮一键部署：
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/your-name/your-repo)
+[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/your-name/your-repo)
+
+Cloudflare Pages 目前没有等价的按钮式一键部署，需要在 dashboard 里手动连接一次仓库（之后每次 push 都自动构建）：
 
 | 项目 | 值 |
 |---|---|
@@ -77,6 +91,8 @@ Astro + Starlight 的标准静态站，可以部署到任何支持静态站点�
 | Build command | `npm run build` |
 | Build output directory | `dist` |
 | Node version | ≥ 18 |
+
+三个平台都会自动识别 Astro，上表参数一般不用改。
 
 ## License
 
