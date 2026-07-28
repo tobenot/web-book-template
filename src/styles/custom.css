@@ -415,6 +415,15 @@ nav.sidebar-pane,
   text-decoration: underline;
 }
 
+/* 外链小图标：Footer.astro 的脚本会给跳出站外的链接加 target=_blank，
+   这里给它加个视觉提示，读者点之前就知道会离开当前页面。 */
+.sl-markdown-content a:not(:where(.not-content *))[target="_blank"]::after {
+  content: "↗";
+  display: inline-block;
+  margin-inline-start: 0.15em;
+  font-size: 0.85em;
+}
+
 /* Blockquotes */
 .sl-markdown-content blockquote {
   margin-block: 1.5rem;
