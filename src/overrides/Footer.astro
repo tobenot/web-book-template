@@ -39,6 +39,20 @@ const editFullUrl = editPath ? `${repoBase}/edit/main/${editPath}` : repoBase;
 {/* —— 阅读进度条（splash / 部入口 / 减法页面跳过，和反馈条同一个判断） —— */}
 {!isQuietPage && <div id="reading-progress" class="reading-progress" aria-hidden="true"></div>}
 
+{/* —— 记录"读到哪了"，给首页的继续阅读入口用（见 src/components/ContinueReading.astro） —— */}
+{!isQuietPage && (
+  <script is:inline>
+    (() => {
+      try {
+        localStorage.setItem('book:last-chapter', JSON.stringify({
+          href: location.pathname,
+          title: document.title.split(' | ')[0],
+        }));
+      } catch {}
+    })();
+  </script>
+)}
+
 {/* —— 反馈条（splash / 部入口 / 减法页面跳过） —— */}
 {!isQuietPage && (
   <div class="book-feedback not-content">

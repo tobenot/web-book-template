@@ -1,0 +1,50 @@
+---
+// 首页"继续阅读"入口：读 localStorage 里 Footer.astro 记录的最后一次访问章节。
+// 服务端渲染时不知道访客是谁，所以默认隐藏，纯客户端脚本判断要不要显示。
+---
+
+<div id="continue-reading" class="continue-reading not-content" hidden>
+  <a id="continue-reading__link" href="#"></a>
+</div>
+
+<script is:inline>
+  (() => {
+    let data;
+    try {
+      data = JSON.parse(localStorage.getItem('book:last-chapter') || 'null');
+    } catch {}
+    if (!data || !data.href || !data.title) return;
+
+    const el = document.getElementById('continue-reading');
+    const link = document.getElementById('continue-reading__link');
+    if (!el || !link) return;
+
+    link.href = data.href;
+    link.textContent = `继续阅读：${data.title}`;
+    el.hidden = false;
+  })();
+</script>
+
+<style>
+  .continue-reading {
+    margin-top: 1.5rem;
+  }
+
+  .continue-reading a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--book-border-strong);
+    border-radius: 6px;
+    background: var(--book-surface-1);
+    color: var(--book-accent);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .continue-reading a:hover {
+    background: var(--book-surface-2);
+  }
+</style>
