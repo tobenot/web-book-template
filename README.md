@@ -17,8 +17,11 @@
    | `src/overrides/Footer.astro` | `repoBase` | 必改 | 你的 GitHub 仓库地址（不带 `/edit/main/`），"提 Issue"按钮用 |
    | `scripts/build-og.mjs` | `SITE_FOOTER` / `BOOK_NAME` / `HOME_TITLE_LINES` / `HOME_BADGES` | 必改 | 分享卡上出现的文字 |
    | `src/pages/rss.xml.js` | `title` / `description` | 必改 | RSS 订阅源标题/简介 |
+   | `public/manifest.webmanifest` | `name` / `short_name` / `description` | 必改 | 手机"添加到主屏幕"用的信息，和 bookTitle/bookDescription 保持一致 |
    | `src/content/docs/index.mdx` / `preface.mdx` / `about.mdx` | 正文 | 必改 | 首页/前言/关于页的占位正文 |
    | `package.json` | `name` | 可选 | 包名，不影响运行 |
+
+   `favicon.svg` 和 `robots.txt` 已经内置默认值（robots.txt 是按 `siteUrl` 动态生成的，改 `astro.config.mjs` 一处就同步），favicon 想换成自己的图标直接替换 `public/favicon.svg`。
 
    注意 `editLink.baseUrl` 和 `repoBase` 是同一个仓库地址，出现两处；部署按钮（见「部署」一节）用的也是这个地址。
 
@@ -71,7 +74,7 @@ src/components/        自定义 Astro 组件（字数统计、封面海报等�
 src/pages/             非文档页（rss.xml / 404）
 src/styles/            自定义样式
 src/assets/            配图、封面海报等素材
-public/                静态资源（favicon / OG 图 / manifest，需自行补充）
+public/                静态资源（favicon.svg / manifest.webmanifest 已带默认值，OG 图按需补充）
 scripts/               构建与维护脚本（OG 图生成 / 章号检查 / 章号顺移 / 引号修复）
 design/rules/           写作规划、方法论参考等私人工作文档（已 .gitignore，不进仓库）
 ```
