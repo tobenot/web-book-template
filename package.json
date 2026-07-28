@@ -16,6 +16,7 @@
     "fix:chapters": "node scripts/check-chapter-refs.mjs --write",
     "shift:chapters": "node scripts/shift-chapters.mjs",
     "build:og": "node scripts/build-og.mjs",
+    "build:icons": "node scripts/build-icons.mjs",
     "astro": "astro"
   },
   "dependencies": {

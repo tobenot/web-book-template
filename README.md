@@ -21,7 +21,7 @@
    | `src/content/docs/index.mdx` / `preface.mdx` / `about.mdx` | 正文 | 必改 | 首页/前言/关于页的占位正文 |
    | `package.json` | `name` | 可选 | 包名，不影响运行 |
 
-   `favicon.svg` 和 `robots.txt` 已经内置默认值（robots.txt 是按 `siteUrl` 动态生成的，改 `astro.config.mjs` 一处就同步），favicon 想换成自己的图标直接替换 `public/favicon.svg`。
+   `favicon.svg` 和 `robots.txt` 已经内置默认值（robots.txt 是按 `siteUrl` 动态生成的，改 `astro.config.mjs` 一处就同步），favicon 想换成自己的图标直接替换 `public/favicon.svg`，然后跑一遍 `npm run build:icons` 重新生成 manifest 用的 192/512/maskable PNG（不跑的话图标和 svg 不一致，但不影响网站正常跑）。
 
    注意 `editLink.baseUrl` 和 `repoBase` 是同一个仓库地址，出现两处；部署按钮（见「部署」一节）用的也是这个地址。
 
