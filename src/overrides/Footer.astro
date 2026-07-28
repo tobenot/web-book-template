@@ -74,6 +74,22 @@ const editFullUrl = editPath ? `${repoBase}/edit/main/${editPath}` : repoBase;
   })();
 </script>
 
+{/* —— 键盘 ← / → 翻章：书是线性读的，这是读者最高频的导航动作 —— */}
+<script is:inline>
+  (() => {
+    document.addEventListener('keydown', (e) => {
+      if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      const tag = e.target?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || e.target?.isContentEditable) return;
+
+      const rel = e.key === 'ArrowLeft' ? 'prev' : 'next';
+      const link = document.querySelector(`a[rel="${rel}"]`);
+      if (link) location.href = link.href;
+    });
+  })();
+</script>
+
 {/* —— Mermaid 客户端运行时（仅当页面里有 .mermaid 才加载主包） —— */}
 <script>
   (async () => {
