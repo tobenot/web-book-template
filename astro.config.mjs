@@ -39,7 +39,6 @@ export default defineConfig({
           lang: 'zh-CN',
         },
       },
-      favicon: '/favicon.png',
       customCss: ['./src/styles/custom.css'],
       head: [
         // 主题色（移动端浏览器顶栏）
