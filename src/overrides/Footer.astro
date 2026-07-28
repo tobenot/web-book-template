@@ -1,0 +1,228 @@
+---
+// 覆盖 Starlight 默认 Footer：
+//  · 保留默认的「上次更新 / 上一篇下一篇 / 编辑链接」
+//  · 在下方追加给作者反馈的入口（Issue / 直接改文档）
+//  · 给所有外站链接补 target=_blank rel=noopener（含右上角 social）
+//  · 顺便注入 Mermaid 客户端运行时（按需懒加载）
+//
+// 注意：阅读时间 / 难度 / 章节类型 已挪到 PageTitle.astro，
+// 因为那是「读之前的判断」，不该出现在文末。
+import Default from '@astrojs/starlight/components/Footer.astro';
+
+const route = Astro.locals.starlightRoute;
+const entry = route?.entry;
+const data = entry?.data ?? ({} as Record<string, unknown>);
+const slug = entry?.id ?? '';
+const editPath = entry?.filePath ?? '';
+// 换成你自己的仓库地址（用于生成 Issue 链接和「直接改文档」跳转）
+const repoBase = 'https://github.com/your-name/your-repo';
+
+// 部入口页 / splash / 减法页面（前言/关于）一律不显示反馈条。
+const tpl = (data as any).template as string | undefined;
+const chapterType = (data as any).chapterType as string | undefined;
+const editOff = (data as any).editUrl === false;
+const lastOff = (data as any).lastUpdated === false;
+const isQuietPage =
+  tpl === 'splash' || chapterType === 'part-intro' || (editOff && lastOff);
+
+// —— 反馈链接 ——
+const issueTitle = encodeURIComponent(`[反馈] ${(data as any).title ?? slug}`);
+const issueBody = encodeURIComponent(
+  `页面：/${slug}/\n文件：${editPath}\n\n问题或建议：\n`
+);
+const issueUrl = `${repoBase}/issues/new?title=${issueTitle}&body=${issueBody}`;
+const editFullUrl = editPath ? `${repoBase}/edit/main/${editPath}` : repoBase;
+---
+
+<Default {...Astro.props}><slot /></Default>
+
+{/* —— 反馈条（splash / 部入口 / 减法页面跳过） —— */}
+{!isQuietPage && (
+  <div class="book-feedback not-content">
+    <span class="book-feedback__text">这一节有错或讲不清？</span>
+    <a class="book-feedback__btn" href={issueUrl} target="_blank" rel="noopener">提个 Issue</a>
+    <a class="book-feedback__btn" href={editFullUrl} target="_blank" rel="noopener">直接改文档</a>
+    <a class="book-feedback__btn" href="/about/#sponsor">请作者催更</a>
+  </div>
+)}
+
+{/* —— 全局：所有指向外站的 <a> 自动改为新标签页 —— */}
+{/* 另外：右上角 social 三个图标（催更/博客/RSS）即便指向站内也强制开新标签，
+   这是产品决策——读者点这些是"顺手存一下/订阅一下"，不该把当前阅读位置冲掉。 */}
+<script is:inline>
+  (() => {
+    const host = location.host;
+    const openInNewTab = (a) => {
+      if (a.target) return;
+      a.target = '_blank';
+      const rel = (a.getAttribute('rel') || '').split(/\s+/).filter(Boolean);
+      if (!rel.includes('noopener')) rel.push('noopener');
+      if (!rel.includes('noreferrer')) rel.push('noreferrer');
+      a.setAttribute('rel', rel.join(' '));
+    };
+
+    // 1) 任何指向外站的绝对链接
+    document.querySelectorAll('a[href^="http://"], a[href^="https://"]').forEach((a) => {
+      try {
+        const u = new URL(a.getAttribute('href'));
+        if (u.host && u.host !== host) openInNewTab(a);
+      } catch {}
+    });
+
+    // 2) 右上角 social 区（Starlight 渲染为 .social-icons），不论站内站外都开新标签
+    document.querySelectorAll('.social-icons a[href]').forEach((a) => openInNewTab(a));
+  })();
+</script>
+
+{/* —— Mermaid 客户端运行时（仅当页面里有 .mermaid 才加载主包） —— */}
+<script>
+  (async () => {
+    const nodes = document.querySelectorAll('.mermaid');
+    if (!nodes.length) return;
+
+    // 缓存原始源码，方便主题切换时重渲染
+    nodes.forEach((el) => {
+      const e = el as HTMLElement;
+      if (!e.dataset.source) e.dataset.source = e.textContent ?? '';
+    });
+
+    const { default: mermaid } = await import('mermaid');
+    const isDark = () => document.documentElement.dataset.theme !== 'light';
+
+    const renderAll = async () => {
+      document.querySelectorAll<HTMLElement>('.mermaid').forEach((el) => {
+        if (el.dataset.processed === 'true') {
+          el.removeAttribute('data-processed');
+          el.innerHTML = el.dataset.source ?? '';
+        }
+      });
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: isDark() ? 'dark' : 'default',
+        securityLevel: 'loose',
+        fontFamily: 'inherit',
+      });
+      try {
+        await mermaid.run({ querySelector: '.mermaid' });
+      } catch (e) {
+        console.warn('[mermaid] render error', e);
+      }
+    };
+
+    await renderAll();
+
+    // 主题切换 → 重画
+    const observer = new MutationObserver(renderAll);
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    });
+  })();
+</script>
+
+<style is:global>
+  /* —— Mermaid 容器 —— */
+  .mermaid {
+    display: block;
+    margin-block: 1.6rem;
+    padding: 1rem;
+    border: 1px solid var(--book-border);
+    border-radius: 12px;
+    background: var(--book-surface-1);
+    overflow-x: auto;
+    text-align: center;
+  }
+  .mermaid svg {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* —— 元信息徽章 —— */
+  .book-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2rem;
+  }
+  .book-meta__chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.7rem;
+    border-radius: 999px;
+    border: 1px solid var(--book-border);
+    background: var(--book-surface-2);
+    color: var(--sl-color-gray-2);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .book-meta__chip--time {
+    border-color: var(--book-border-strong);
+    /* 用 --sl-color-accent 而不是 --book-cyan：
+       前者随主题切换（dark = 霓虹青 #1fd2c4，light = 深墨绿 #0a8f83），
+       后者在两种主题下都是 #1fd2c4，亮色主题白底上会过于扎眼。 */
+    color: var(--sl-color-accent);
+  }
+  .book-meta__chip--diff-新手 {
+    background: rgba(31, 210, 196, 0.08);
+    color: var(--book-cyan);
+    border-color: rgba(31, 210, 196, 0.3);
+  }
+  .book-meta__chip--diff-进阶 {
+    background: rgba(255, 170, 60, 0.08);
+    color: #ffb84d;
+    border-color: rgba(255, 170, 60, 0.3);
+  }
+  .book-meta__chip--diff-硬核 {
+    background: rgba(16, 185, 129, 0.08);
+    color: #10b981;
+    border-color: rgba(16, 185, 129, 0.3);
+  }
+  :root[data-theme="light"] .book-meta__chip--diff-硬核 {
+    background: rgba(16, 185, 129, 0.06);
+    color: #047857;
+    border-color: rgba(16, 185, 129, 0.2);
+  }
+
+  /* —— 反馈条 —— */
+  .book-feedback {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 0.8rem;
+    margin-top: 1.5rem;
+    padding: 0.85rem 1.1rem;
+    border: 1px dashed var(--book-border-strong);
+    border-radius: 12px;
+    background: var(--book-surface-1);
+    color: var(--sl-color-gray-2);
+    font-size: 0.92rem;
+  }
+  .book-feedback__text {
+    font-weight: 600;
+    color: var(--sl-color-gray-1);
+  }
+  .book-feedback__btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.85rem;
+    border-radius: 8px;
+    background: var(--book-surface-2);
+    border: 1px solid var(--book-border-strong);
+    color: var(--sl-color-gray-1);
+    font-weight: 600;
+    font-size: 0.88rem;
+    text-decoration: none !important;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+  .book-feedback__btn:hover {
+    background: var(--book-surface-3);
+    border-color: var(--book-cyan-dim);
+    color: var(--book-cyan-dim);
+    transform: translateY(-1px);
+  }
+  .book-feedback__sep {
+    color: var(--sl-color-gray-4);
+    user-select: none;
+  }
+</style>

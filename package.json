@@ -1,0 +1,40 @@
+{
+  "name": "web-book-template",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "prebuild": "node scripts/build-og.mjs",
+    "build": "npm run check:chapters:strict && astro build",
+    "build:strict": "cross-env CHECK_LINKS=1 npm run build",
+    "preview": "astro preview",
+    "check:links": "cross-env CHECK_LINKS=1 astro build",
+    "check:chapters": "node scripts/check-chapter-refs.mjs",
+    "check:chapters:strict": "node scripts/check-chapter-refs.mjs --strict",
+    "fix:chapters": "node scripts/check-chapter-refs.mjs --write",
+    "shift:chapters": "node scripts/shift-chapters.mjs",
+    "build:og": "node scripts/build-og.mjs",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.18",
+    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/starlight": "0.35.3",
+    "@fontsource/maple-mono": "^5.2.6",
+    "astro": "5.18.2",
+    "mermaid": "^11.15.0",
+    "sharp": "0.34.5",
+    "starlight-image-zoom": "^0.13.2",
+    "starlight-links-validator": "^0.19.0"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "cross-env": "^7.0.3",
+    "glob": "^13.0.6",
+    "gray-matter": "^4.0.3",
+    "satori": "^0.26.0",
+    "typescript": "^5.9.3"
+  }
+}

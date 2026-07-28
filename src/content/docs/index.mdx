@@ -1,0 +1,78 @@
+---
+title: 你的书名
+description: 这本书讲什么、写给谁——一两句话说清楚，会出现在搜索结果和分享卡里。
+template: splash
+hero:
+  tagline: 一句话说清楚：读完这本书，读者会带走什么。
+  # 故意不放 image 字段：social-card.png 是 OG 分享卡（由 scripts/build-og.mjs 生成），
+  # 当 hero 图会和站点标题、hero h1 重复。想加视觉时换一张纯插画/图标。
+  actions:
+    - text: 从前言开始
+      link: /preface/
+      icon: right-arrow
+      variant: primary
+    # 有第一章之后，加一个 secondary action 直接跳进去，例如：
+    # - text: 进入第一章
+    #   link: /<部目录>/<slug>/
+    #   variant: secondary
+---
+
+import WordCount from '../../components/WordCount.astro';
+
+<div class="home-intro">
+
+📘 这里写一段书的简介：解决什么问题、面向什么读者、读完能做到什么。
+
+</div>
+
+## 这条路会怎样走
+
+<div class="home-route-grid">
+  <div class="home-route" data-step="1">
+    <strong>【起点】</strong>
+    <p>读者从哪个问题或场景出发。</p>
+  </div>
+  <div class="home-route" data-step="2">
+    <strong>【中段】</strong>
+    <p>中间要经过哪些关键阶段。</p>
+  </div>
+  <div class="home-route" data-step="3">
+    <strong>【终点】</strong>
+    <p>读完之后读者能拿到什么。</p>
+  </div>
+</div>
+
+## 适合谁读
+
+<div class="home-grid">
+  <div class="home-card">
+    <strong>【读者画像 1】</strong>
+    <p>一句话描述这类读者的起点和需求。</p>
+  </div>
+  <div class="home-card">
+    <strong>【读者画像 2】</strong>
+    <p>一句话描述这类读者的起点和需求。</p>
+  </div>
+  <div class="home-card">
+    <strong>【读者画像 3】</strong>
+    <p>一句话描述这类读者的起点和需求。</p>
+  </div>
+</div>
+
+## 这本书是怎么写的
+
+写一段关于素材来源、写作方法和准确性态度的说明。发现内容过期或有误，欢迎在每一页底部点「提个 Issue」反馈。
+
+## 写了多少
+
+<WordCount />
+
+<div class="progress-panel">
+  <div class="progress-panel__head">
+    <span class="progress-panel__badge">写作中</span>
+    <span class="progress-panel__title">当前状态</span>
+  </div>
+
+从 <a href="/preface/">前言</a> 开始读起。写完第一章之后，把这里换成实际的进度说明和跳转链接。
+
+</div>

@@ -1,0 +1,64 @@
+---
+title: 关于这本书
+description: 关于这本书的作者、写作动机、联系方式，以及赞助渠道。
+# 走「减法」frontmatter：关于页是叙述性页面，不是技术文档。
+# 关掉默认的文档构件，让正文本身成为主角。
+tableOfContents: false
+pagefind: false
+editUrl: false
+lastUpdated: false
+sidebar:
+  label: 关于 / 催更
+---
+
+import { CardGrid, LinkCard } from '@astrojs/starlight/components';
+import Posters from '../../components/Posters.astro';
+
+## 关于作者
+
+{/* 没有头像图时，删掉整个 <img> 标签即可，不影响布局 */}
+<div class="book-author">
+  <img
+    class="book-author__avatar"
+    src="/author/avatar.webp"
+    alt="作者头像"
+    width="96"
+    height="96"
+    loading="lazy"
+  />
+  <div class="book-author__body">
+
+我是 **【你的名字】**。在这里写一两句作者简介和写这本书的动机。
+
+  </div>
+</div>
+
+{/* 把封面/场景截图丢进 src/assets/posters/ 会自动显示在这里，没有图时不渲染任何东西 */}
+<Posters />
+
+## 联系方式
+
+- GitHub Issue（推荐）：[提一个](https://github.com/your-name/your-repo/issues/new)。任何错字、过期内容、想看的章节，都从这里来。
+- 邮件 / 其他联系方式：【填在这里】
+
+## 催更 / 赞助 <a id="sponsor"></a>
+
+如果这本书对你有帮助，可以考虑：
+
+<CardGrid>
+  <LinkCard
+    title="【赞助渠道名称】"
+    href="#"
+    description="一句话说明"
+  />
+</CardGrid>
+
+### 不想花钱也能帮上忙
+
+- 把这本书分享给需要的人
+- 在每一页底部点「提个 Issue」反馈错字 / 过期信息
+- 在 GitHub 仓库点一个 Star
+
+---
+
+写到这里，谢谢看到这一页的人。

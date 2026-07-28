@@ -1,0 +1,224 @@
+---
+// 覆盖 Starlight 默认 SiteTitle，做成顶栏面包屑：
+//   书名 · 第X部 · 当前章节标题
+//
+// 为什么这样做：
+//   读者看书时常要截图分享或贴 issue。只有正文 H1 标识章节的话，截图必须连
+//   文章顶部一起截下来，否则看不出在哪章；只有章节名又看不出在书的哪一部分。
+//   把"第几部 + 章节名"放进粘性 header 里，滚到任何位置截图都自带完整定位。
+//
+// 「部」的来源：
+//   sidebar 里每一部对应一个目录（getting-started / workbench / programming /
+//   appendix）。这里把「目录前缀 → 部名」硬编码成一张表，避免运行时去解析
+//   sidebar 配置（Starlight 不在 locals 暴露 sidebar 完整结构，绕路反而更脆）。
+//   新增一部时来这里加一行即可——和加 sidebar 项是相邻动作，心智负担可控。
+//
+// 整块仍是「返回首页」链接（语义和原版一致），章节/部信息都包在同一个 <a>
+// 里：移动端隐藏书名后，仍然有可见的回首页入口（aria-label 说明用途）。
+//
+// 移动端策略：
+//   · ≥72rem 宽屏 / 桌面：三段全显。
+//   · ≤72rem 中等屏：先把书名压到 14ch，部和章节优先保留。
+//   · ≤50rem 移动布局（Starlight 切汉堡的断点）：隐藏书名，留「第X部 · 章节」。
+//   · ≤30rem 极窄（折叠屏外屏 / 老安卓）：再隐藏「部」，只留章节标题。
+//
+// 首页 (splash) 不显示这些附加段，避免和 hero H1 重复。
+
+const route = Astro.locals.starlightRoute;
+const { siteTitle, siteTitleHref } = route;
+const data = (route?.entry?.data ?? {}) as Record<string, unknown>;
+const pageTitle = (data as any).title as string | undefined;
+const tpl = (data as any).template as string | undefined;
+const isSplash = tpl === 'splash';
+
+// 目录前缀 → 部名（与 astro.config.mjs 的 sidebar 一一对应）。
+// 新增一「部」时在这里加一行；没配置的目录不显示这一段面包屑（不影响其他功能）。
+const partMap: Array<{ prefix: string; label: string }> = [];
+const pathname = Astro.url.pathname;
+const partLabel = partMap.find((p) => pathname.startsWith(p.prefix))?.label;
+
+const showChapter = !isSplash && !!pageTitle && pageTitle !== siteTitle;
+const showPart = !isSplash && !!partLabel;
+---
+
+<a
+  href={siteTitleHref}
+  class="site-title sl-flex"
+  aria-label={showChapter ? `返回首页 · ${siteTitle}` : siteTitle}
+>
+  <span class="site-title__book">{siteTitle}</span>
+  {showPart && (
+    <>
+      <span class="site-title__sep site-title__sep--book" aria-hidden="true">·</span>
+      <span class="site-title__part">{partLabel}</span>
+    </>
+  )}
+  {showChapter && (
+    <>
+      <span class="site-title__sep site-title__sep--part" aria-hidden="true">·</span>
+      <span class="site-title__chapter">{pageTitle}</span>
+    </>
+  )}
+</a>
+
+<style>
+  /* 容器：本身是 <a>，但所有可见文字都在子 <span> 里，
+     子 span 各自有显式 color，所以让 <a> 自身 color: inherit 即可。
+     这样：
+       1. 浏览器不会给 <a> 套默认链接色（含 :visited 紫色）；
+       2. :visited 只能改 color/background-color 等少数属性、且只作用于当前
+          元素，不会传染给子元素 —— 子 span 的显式 color 永远胜出；
+       3. 不需要 !important 大锤，未来要做 hover 变青绿等花活也很自由。 */
+  .site-title {
+    color: inherit;
+    text-decoration: none;
+    min-width: 0;
+    gap: 0.45rem;
+    /* 防止 flex 子在 nowrap 下溢出父容器、把右侧图标顶出去 */
+    max-width: 100%;
+    align-items: center;
+  }
+
+  /* 书名：默认颜色（暗色用白，亮色由 Starlight 主题接管） */
+  .site-title__book {
+    color: var(--sl-color-white);
+  }
+
+  /* 通用文本省略：所有可能变长的子元素都需要 min-width:0 才能正确截断 */
+  .site-title__book,
+  .site-title__part,
+  .site-title__chapter {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+    /* 不继承父链接的 underline 行为，这些段落视觉上是文本不是链接 */
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  /* 分隔符：低对比度青绿系，不抢戏，不会被压缩 */
+  .site-title__sep {
+    color: var(--book-cyan);
+    opacity: 0.45;
+    font-weight: 500;
+    user-select: none;
+    flex-shrink: 0;
+  }
+  :root[data-theme="light"] .site-title__sep {
+    color: #0a8f83;
+    opacity: 0.45;
+  }
+
+  /* 「第X部 / 附录」：作为面包屑中段，用统一青绿色背景描边的小 chip */
+  .site-title__part {
+    flex-shrink: 0;
+    font-size: 0.78rem;
+    font-weight: 600;
+    line-height: 1;
+    padding: 0.22em 0.55em;
+    border: 1px solid rgba(31, 210, 196, 0.25);
+    border-radius: 999px;
+    color: var(--book-cyan);
+    background: rgba(31, 210, 196, 0.06);
+  }
+  :root[data-theme="light"] .site-title__part {
+    border-color: rgba(10, 143, 131, 0.25);
+    color: #0a8f83;
+    background: rgba(10, 143, 131, 0.06);
+  }
+
+  /* 章节标题：高亮、加粗 */
+  .site-title__chapter {
+    color: var(--sl-color-white);
+    font-weight: 600;
+    font-size: inherit;
+    line-height: inherit;
+  }
+
+  /* 整体 hover 时章节和 chip 进行优雅的亮色提升 */
+  .site-title:hover .site-title__chapter {
+    color: var(--book-cyan);
+  }
+  :root[data-theme="light"] .site-title:hover .site-title__chapter {
+    color: #0a8f83;
+  }
+
+  /* —— 断点策略 —— */
+
+  /* ≥72rem（宽屏 / 桌面）：默认即可，三段尽量完整显示，但加安全截断 */
+  .site-title__book { max-width: 32ch; }
+  .site-title__chapter { max-width: 24ch; }
+
+  /* 中等屏（≤72rem，含小桌面 / 横屏平板）：优雅压缩 */
+  @media (max-width: 72rem) {
+    .site-title__book { max-width: 14ch; }
+    .site-title__chapter { max-width: 16ch; }
+  }
+
+  /* 平板竖屏 / 大手机（≤50rem）：
+     不隐藏书名！而是采用高度自适应的双行面包屑布局，
+     第一行精致小字显示书名，第二行显示「部 chip · 章节」。
+     这样读者手机截屏分享时，一眼就能看清完整的书名和章节名。 */
+  @media (max-width: 50rem) {
+    .site-title {
+      flex-wrap: wrap;
+      gap: 0.12rem 0.35rem;
+      max-width: calc(100vw - 130px); /* 留足右侧按钮空间 */
+      line-height: 1.15;
+    }
+    .site-title__book {
+      flex: 0 0 100%; /* 强行在第一行独占 */
+      font-size: 0.72rem;
+      color: var(--sl-color-gray-2);
+      max-width: 22ch; /* 即使书名长，也有极大的显示空间 */
+    }
+    .site-title__sep--book {
+      display: none; /* 第一行书名末尾分隔符换行后不需要，予以隐藏 */
+    }
+    .site-title__chapter {
+      font-size: 0.8rem;
+      max-width: 13ch; /* 约 13 个汉字，在双行下面非常宽裕 */
+      flex: 0 1 auto;
+    }
+    .site-title__part {
+      font-size: 0.7rem;
+      padding: 0.12em 0.45em;
+    }
+  }
+
+  /* 小手机 / 窄屏（≤36rem）：
+     进一步缩微，确保在超窄屏下也安全共存 */
+  @media (max-width: 36rem) {
+    .site-title {
+      max-width: calc(100vw - 110px);
+      gap: 0.1rem 0.3rem;
+    }
+    .site-title__book {
+      font-size: 0.68rem;
+      max-width: 18ch;
+    }
+    .site-title__chapter {
+      font-size: 0.76rem;
+      max-width: 11ch;
+    }
+    .site-title__part {
+      font-size: 0.66rem;
+      padding: 0.1em 0.4em;
+    }
+  }
+
+  /* 极窄屏（≤30rem，老安卓 / 折叠屏外屏）：
+     保底截断，极窄屏下仍旧并存 */
+  @media (max-width: 30rem) {
+    .site-title {
+      max-width: calc(100vw - 85px);
+    }
+    .site-title__book {
+      max-width: 14ch;
+    }
+    .site-title__chapter {
+      max-width: 9ch;
+    }
+  }
+</style>
