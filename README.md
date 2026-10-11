@@ -25,16 +25,16 @@
 
    注意 `editLink.baseUrl` 和 `repoBase` 是同一个仓库地址，出现两处；部署按钮（见「部署」一节）用的也是这个地址。
 
-3. 安装依赖并本地预览：
+3. 安装依赖并本地预览。按当前 lockfile 建议 Node 22.x 与 npm 10，首次 checkout 用 `npm ci`，不要把已有 `node_modules` 当成源输入：
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
 预览地址：`http://localhost:4321`
 
-4. 在 `src/content/docs/<部目录>/` 下新增章节 `.mdx` 文件，侧栏会自动生成；新增一「部」时去 `astro.config.mjs` 的 `sidebar` 加一个 `autogenerate` 条目。写章的速查表见 [`design/rules/writing-cheatsheet.md`](./design/rules/writing-cheatsheet.md)（该目录不入 git，仅本地保留）。
+4. 在 `src/content/docs/<部目录>/` 下新增章节 `.mdx` 文件，侧栏会自动生成；新增一「部」时去 `astro.config.mjs` 的 `sidebar` 加一个 `autogenerate` 条目。写章的速查表见 [`design/rules/writing-cheatsheet.md`](./design/rules/writing-cheatsheet.md)，当前 `design/rules/` 已被 Git 跟踪，属于可随新机器恢复的写作方法输入，不是仅本机的 ignored 目录。
 
 ## 这个模板长什么样
 
@@ -76,7 +76,7 @@ src/styles/            自定义样式
 src/assets/            配图、封面海报等素材
 public/                静态资源（favicon.svg / manifest.webmanifest 已带默认值，OG 图按需补充）
 scripts/               构建与维护脚本（OG 图生成 / 章号检查 / 章号顺移 / 引号修复）
-design/rules/           写作规划、方法论参考等私人工作文档（已 .gitignore，不进仓库）
+design/rules/           写作规划与方法论参考（当前已跟踪，不发布为正文）
 ```
 
 ## 部署
@@ -93,9 +93,19 @@ Cloudflare Pages 目前没有等价的按钮式一键部署，需要在 dashboar
 | Framework preset | Astro |
 | Build command | `npm run build` |
 | Build output directory | `dist` |
-| Node version | ≥ 18 |
+| Node version | 22.x（当前 CI 使用 Node 20） |
 
-三个平台都会自动识别 Astro，上表参数一般不用改。
+三个平台都会自动识别 Astro，上表参数一般不用改。此节是可选发布入口，不是冷启动必做步骤。现有 `.github/workflows/build.yml` 只执行 `npm ci` 和 `build:strict`，没有部署步骤，外部平台是否已连仓并自动发布须另核，不由此工作流推断。
+
+## 生成链与首次构建的外部输入
+
+- `npm run build` 会先触发 `prebuild` 的 `scripts/build-og.mjs`，再检查章号并执行 Astro 构建。`npm run dev` 本身不执行这个 prebuild。
+- 分享卡从已跟踪的 `src/content/docs/` 正文及脚本配置生成。首次运行还会从脚本中的 jsDelivr / `notofonts/noto-cjk@main` 链接下载 Regular、Bold 两份 OTF 到 ignored 的 `scripts/.cache/og-fonts/`。它们不在 npm lockfile 里，链接指向可变的上游 `main`，所以只有 `npm ci` 不能证明离线构建或字体字节完全可重现。
+- 新机器需能取得这两份外部字体。网络失败与正文源丢失是两类问题，不把旧机器缓存当成已入库，也不默认把所有生成 PNG、依赖目录和字体包再复制一遍。若以后需要固定字体字节，应记录选定的不可变版本、许可证和哈希后再调整生成器，本批未替换来源或下载字体。
+- `public/og/` 是可重建的 ignored 输出。`public/social-card.png` 与 SVG fallback 当前已跟踪，可能被生成器重写，不删除既有输出来证明审计。
+- 图标生成器 `scripts/build-icons.mjs` 从已跟踪的 `public/favicon.svg` 生成三份 PNG，只在改图标或需要恢复输出时运行，不把它当每次正文修改的必跑命令。
+
+2026-10-11 本批依据 lockfile 的 Astro 5.18.2 / sharp 0.34.5 等 engine 声明补冷启动入口，核正文、写作规则、生成脚本、字体下载路径和图标输入。没有安装依赖、生成图片、构建站点、push 或部署。README-only 修订只做局部路径、声明与差异核验，未把它冒充新环境构建成功。
 
 ## License
 

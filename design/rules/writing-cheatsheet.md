@@ -1,6 +1,6 @@
 # 写新章速查卡
 
-> 写章前看这一页就够。详细解释见 [`STARLIGHT-FEATURES.md`](../STARLIGHT-FEATURES.md)。
+> 写章前看这一页就够。详细解释见 [`STARLIGHT-FEATURES.md`](../../STARLIGHT-FEATURES.md)。
 
 ## 模板：动手章
 
